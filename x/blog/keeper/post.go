@@ -57,3 +57,36 @@ func (k Keeper) GetPost(ctx sdk.Context, id uint64) (val types.Post, found bool)
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
 }
+
+func (k Keeper) SetPost(ctx sdk.Context, post types.Post) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.PostKey))
+	b := k.cdc.MustMarshal(&post)
+	store.Set(GetPostIDBytes(post.Id), b)
+}
+
+func (k Keeper) RemovePost(ctx sdk.Context, id uint64) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.PostKey))
+	store.Delete(GetPostIDBytes(id))
+}
+
+// func (k Keeper) GetAllPostPaginated(ctx sdk.Context, pageRequest *query.PageRequest) (list []types.Post, pageResponse *query.PageResponse, err error) {
+// 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+// 	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.PostKey))
+
+// 	pageResponse, err = query.Paginate(store, pageRequest, func(key []byte, value []byte) error {
+// 		var post types.Post
+// 		if err := k.cdc.Unmarshal(value, &post); err != nil {
+// 			return err
+// 		}
+// 		list = append(list, post)
+// 		return nil
+// 	})
+
+// 	if err != nil {
+// 		return nil, nil, status.Error(codes.Internal, err.Error())
+// 	}
+
+// 	return list, pageResponse, err
+// }
