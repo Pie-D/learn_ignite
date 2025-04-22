@@ -20,10 +20,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName = "/loan.loan.Msg/UpdateParams"
-	Msg_RequestLoan_FullMethodName  = "/loan.loan.Msg/RequestLoan"
-	Msg_ApproveLoan_FullMethodName  = "/loan.loan.Msg/ApproveLoan"
-	Msg_CancelLoan_FullMethodName   = "/loan.loan.Msg/CancelLoan"
+	Msg_UpdateParams_FullMethodName  = "/loan.loan.Msg/UpdateParams"
+	Msg_RequestLoan_FullMethodName   = "/loan.loan.Msg/RequestLoan"
+	Msg_ApproveLoan_FullMethodName   = "/loan.loan.Msg/ApproveLoan"
+	Msg_CancelLoan_FullMethodName    = "/loan.loan.Msg/CancelLoan"
+	Msg_RepayLoan_FullMethodName     = "/loan.loan.Msg/RepayLoan"
+	Msg_LiquidateLoan_FullMethodName = "/loan.loan.Msg/LiquidateLoan"
 )
 
 // MsgClient is the client API for Msg service.
@@ -36,6 +38,8 @@ type MsgClient interface {
 	RequestLoan(ctx context.Context, in *MsgRequestLoan, opts ...grpc.CallOption) (*MsgRequestLoanResponse, error)
 	ApproveLoan(ctx context.Context, in *MsgApproveLoan, opts ...grpc.CallOption) (*MsgApproveLoanResponse, error)
 	CancelLoan(ctx context.Context, in *MsgCancelLoan, opts ...grpc.CallOption) (*MsgCancelLoanResponse, error)
+	RepayLoan(ctx context.Context, in *MsgRepayLoan, opts ...grpc.CallOption) (*MsgRepayLoanResponse, error)
+	LiquidateLoan(ctx context.Context, in *MsgLiquidateLoan, opts ...grpc.CallOption) (*MsgLiquidateLoanResponse, error)
 }
 
 type msgClient struct {
@@ -82,6 +86,24 @@ func (c *msgClient) CancelLoan(ctx context.Context, in *MsgCancelLoan, opts ...g
 	return out, nil
 }
 
+func (c *msgClient) RepayLoan(ctx context.Context, in *MsgRepayLoan, opts ...grpc.CallOption) (*MsgRepayLoanResponse, error) {
+	out := new(MsgRepayLoanResponse)
+	err := c.cc.Invoke(ctx, Msg_RepayLoan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) LiquidateLoan(ctx context.Context, in *MsgLiquidateLoan, opts ...grpc.CallOption) (*MsgLiquidateLoanResponse, error) {
+	out := new(MsgLiquidateLoanResponse)
+	err := c.cc.Invoke(ctx, Msg_LiquidateLoan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -92,6 +114,8 @@ type MsgServer interface {
 	RequestLoan(context.Context, *MsgRequestLoan) (*MsgRequestLoanResponse, error)
 	ApproveLoan(context.Context, *MsgApproveLoan) (*MsgApproveLoanResponse, error)
 	CancelLoan(context.Context, *MsgCancelLoan) (*MsgCancelLoanResponse, error)
+	RepayLoan(context.Context, *MsgRepayLoan) (*MsgRepayLoanResponse, error)
+	LiquidateLoan(context.Context, *MsgLiquidateLoan) (*MsgLiquidateLoanResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -110,6 +134,12 @@ func (UnimplementedMsgServer) ApproveLoan(context.Context, *MsgApproveLoan) (*Ms
 }
 func (UnimplementedMsgServer) CancelLoan(context.Context, *MsgCancelLoan) (*MsgCancelLoanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelLoan not implemented")
+}
+func (UnimplementedMsgServer) RepayLoan(context.Context, *MsgRepayLoan) (*MsgRepayLoanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RepayLoan not implemented")
+}
+func (UnimplementedMsgServer) LiquidateLoan(context.Context, *MsgLiquidateLoan) (*MsgLiquidateLoanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LiquidateLoan not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -196,6 +226,42 @@ func _Msg_CancelLoan_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RepayLoan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRepayLoan)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RepayLoan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_RepayLoan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RepayLoan(ctx, req.(*MsgRepayLoan))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_LiquidateLoan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLiquidateLoan)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).LiquidateLoan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_LiquidateLoan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).LiquidateLoan(ctx, req.(*MsgLiquidateLoan))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -218,6 +284,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelLoan",
 			Handler:    _Msg_CancelLoan_Handler,
+		},
+		{
+			MethodName: "RepayLoan",
+			Handler:    _Msg_RepayLoan_Handler,
+		},
+		{
+			MethodName: "LiquidateLoan",
+			Handler:    _Msg_LiquidateLoan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
