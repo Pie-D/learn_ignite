@@ -27,6 +27,14 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgRequestLoan int = 100
 
+	opWeightMsgApproveLoan = "op_weight_msg_approve_loan"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgApproveLoan int = 100
+
+	opWeightMsgCancelLoan = "op_weight_msg_cancel_loan"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCancelLoan int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -61,6 +69,28 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		loansimulation.SimulateMsgRequestLoan(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgApproveLoan int
+	simState.AppParams.GetOrGenerate(opWeightMsgApproveLoan, &weightMsgApproveLoan, nil,
+		func(_ *rand.Rand) {
+			weightMsgApproveLoan = defaultWeightMsgApproveLoan
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgApproveLoan,
+		loansimulation.SimulateMsgApproveLoan(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCancelLoan int
+	simState.AppParams.GetOrGenerate(opWeightMsgCancelLoan, &weightMsgCancelLoan, nil,
+		func(_ *rand.Rand) {
+			weightMsgCancelLoan = defaultWeightMsgCancelLoan
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCancelLoan,
+		loansimulation.SimulateMsgCancelLoan(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -74,6 +104,22 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgRequestLoan,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				loansimulation.SimulateMsgRequestLoan(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgApproveLoan,
+			defaultWeightMsgApproveLoan,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				loansimulation.SimulateMsgApproveLoan(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCancelLoan,
+			defaultWeightMsgCancelLoan,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				loansimulation.SimulateMsgCancelLoan(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),
