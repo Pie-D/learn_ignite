@@ -40,5 +40,7 @@ func (k msgServer) RepayLoan(goCtx context.Context, msg *types.MsgRepayLoan) (*t
 	if err != nil {
 		return nil, errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, "Failed to send coins from %v to %s: %v", types.ModuleName, borrower.String(), err)
 	}
+	loan.State = "repayed"
+	k.SetLoan(ctx, loan)
 	return &types.MsgRepayLoanResponse{}, nil
 }
