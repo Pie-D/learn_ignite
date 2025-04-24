@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -25,6 +26,7 @@ import (
 
 // NewRootCmd creates a new root command for tokenfactoryd. It is called once in the main function.
 func NewRootCmd() *cobra.Command {
+	fmt.Println("===> Đã vào NewRootCmd()")
 	var (
 		autoCliOpts        autocli.AppOptions
 		moduleBasicManager module.BasicManager
@@ -44,6 +46,7 @@ func NewRootCmd() *cobra.Command {
 		&moduleBasicManager,
 		&clientCtx,
 	); err != nil {
+		fmt.Println("Error during depinject.Inject:", err)
 		panic(err)
 	}
 

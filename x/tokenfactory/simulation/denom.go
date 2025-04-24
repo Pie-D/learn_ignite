@@ -47,8 +47,9 @@ func SimulateMsgCreateDenom(
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
 			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      BankKeeperAdapter{bk},
+			AccountKeeper:   AccountKeeperAdapter{ak},
+			// AccountKeeper: ak,
+			Bankkeeper: BankKeeperAdapter{bk},
 		}
 		return simulation.GenAndDeliverTxWithRandFees(txCtx)
 	}
@@ -92,8 +93,9 @@ func SimulateMsgUpdateDenom(
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
 			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      BankKeeperAdapter{bk},
+			// AccountKeeper:   ak,
+			AccountKeeper: AccountKeeperAdapter{ak},
+			Bankkeeper:    BankKeeperAdapter{bk},
 		}
 		return simulation.GenAndDeliverTxWithRandFees(txCtx)
 	}
@@ -137,8 +139,9 @@ func SimulateMsgDeleteDenom(
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
 			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      BankKeeperAdapter{bk},
+			AccountKeeper:   AccountKeeperAdapter{ak},
+			// AccountKeeper: ak,
+			Bankkeeper: BankKeeperAdapter{bk},
 		}
 		return simulation.GenAndDeliverTxWithRandFees(txCtx)
 	}

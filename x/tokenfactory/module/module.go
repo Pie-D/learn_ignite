@@ -193,6 +193,8 @@ type ModuleOutputs struct {
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
 	// default to governance authority if not provided
+	fmt.Println("AccountKeeper:", in.AccountKeeper)
+    fmt.Println("BankKeeper:", in.BankKeeper)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 	if in.Config.Authority != "" {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
